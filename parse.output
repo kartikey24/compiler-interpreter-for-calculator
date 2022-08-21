@@ -1,0 +1,408 @@
+Grammar
+
+    0 $accept: Start $end
+
+    1 Start: StmtList
+
+    2 StmtList: Stmt
+    3         | StmtList Stmt
+
+    4 Stmt: ID '=' Expr ';'
+    5     | Expr ';'
+
+    6 Expr: Expr '+' Expr
+    7     | Expr '*' Expr
+    8     | Expr '/' Expr
+    9     | Expr '-' Expr
+   10     | '-' Expr
+   11     | NUM
+   12     | ID
+
+   13 NUM: INT
+   14    | FLOAT
+   15    | COMPLEX
+
+   16 COMPLEX: '(' INT ',' INT ')'
+
+
+Terminals, with rules where they appear
+
+    $end (0) 0
+    '(' (40) 16
+    ')' (41) 16
+    '*' (42) 7
+    '+' (43) 6
+    ',' (44) 16
+    '-' (45) 9 10
+    '/' (47) 8
+    ';' (59) 4 5
+    '=' (61) 4
+    error (256)
+    INT <term> (258) 13 16
+    FLOAT <term> (259) 14
+    ID <term> (260) 4 12
+    Uminus (261)
+
+
+Nonterminals, with rules where they appear
+
+    $accept (16)
+        on left: 0
+    Start (17)
+        on left: 1
+        on right: 0
+    StmtList <code> (18)
+        on left: 2 3
+        on right: 1 3
+    Stmt <code> (19)
+        on left: 4 5
+        on right: 2 3
+    Expr <expression_attributes> (20)
+        on left: 6 7 8 9 10 11 12
+        on right: 4 5 6 7 8 9 10
+    NUM <term> (21)
+        on left: 13 14 15
+        on right: 11
+    COMPLEX <term> (22)
+        on left: 16
+        on right: 15
+
+
+State 0
+
+    0 $accept: . Start $end
+
+    INT    shift, and go to state 1
+    FLOAT  shift, and go to state 2
+    ID     shift, and go to state 3
+    '-'    shift, and go to state 4
+    '('    shift, and go to state 5
+
+    Start     go to state 6
+    StmtList  go to state 7
+    Stmt      go to state 8
+    Expr      go to state 9
+    NUM       go to state 10
+    COMPLEX   go to state 11
+
+
+State 1
+
+   13 NUM: INT .
+
+    $default  reduce using rule 13 (NUM)
+
+
+State 2
+
+   14 NUM: FLOAT .
+
+    $default  reduce using rule 14 (NUM)
+
+
+State 3
+
+    4 Stmt: ID . '=' Expr ';'
+   12 Expr: ID .
+
+    '='  shift, and go to state 12
+
+    $default  reduce using rule 12 (Expr)
+
+
+State 4
+
+   10 Expr: '-' . Expr
+
+    INT    shift, and go to state 1
+    FLOAT  shift, and go to state 2
+    ID     shift, and go to state 13
+    '-'    shift, and go to state 4
+    '('    shift, and go to state 5
+
+    Expr     go to state 14
+    NUM      go to state 10
+    COMPLEX  go to state 11
+
+
+State 5
+
+   16 COMPLEX: '(' . INT ',' INT ')'
+
+    INT  shift, and go to state 15
+
+
+State 6
+
+    0 $accept: Start . $end
+
+    $end  shift, and go to state 16
+
+
+State 7
+
+    1 Start: StmtList .
+    3 StmtList: StmtList . Stmt
+
+    INT    shift, and go to state 1
+    FLOAT  shift, and go to state 2
+    ID     shift, and go to state 3
+    '-'    shift, and go to state 4
+    '('    shift, and go to state 5
+
+    $default  reduce using rule 1 (Start)
+
+    Stmt     go to state 17
+    Expr     go to state 9
+    NUM      go to state 10
+    COMPLEX  go to state 11
+
+
+State 8
+
+    2 StmtList: Stmt .
+
+    $default  reduce using rule 2 (StmtList)
+
+
+State 9
+
+    5 Stmt: Expr . ';'
+    6 Expr: Expr . '+' Expr
+    7     | Expr . '*' Expr
+    8     | Expr . '/' Expr
+    9     | Expr . '-' Expr
+
+    '+'  shift, and go to state 18
+    '-'  shift, and go to state 19
+    '*'  shift, and go to state 20
+    '/'  shift, and go to state 21
+    ';'  shift, and go to state 22
+
+
+State 10
+
+   11 Expr: NUM .
+
+    $default  reduce using rule 11 (Expr)
+
+
+State 11
+
+   15 NUM: COMPLEX .
+
+    $default  reduce using rule 15 (NUM)
+
+
+State 12
+
+    4 Stmt: ID '=' . Expr ';'
+
+    INT    shift, and go to state 1
+    FLOAT  shift, and go to state 2
+    ID     shift, and go to state 13
+    '-'    shift, and go to state 4
+    '('    shift, and go to state 5
+
+    Expr     go to state 23
+    NUM      go to state 10
+    COMPLEX  go to state 11
+
+
+State 13
+
+   12 Expr: ID .
+
+    $default  reduce using rule 12 (Expr)
+
+
+State 14
+
+    6 Expr: Expr . '+' Expr
+    7     | Expr . '*' Expr
+    8     | Expr . '/' Expr
+    9     | Expr . '-' Expr
+   10     | '-' Expr .
+
+    $default  reduce using rule 10 (Expr)
+
+
+State 15
+
+   16 COMPLEX: '(' INT . ',' INT ')'
+
+    ','  shift, and go to state 24
+
+
+State 16
+
+    0 $accept: Start $end .
+
+    $default  accept
+
+
+State 17
+
+    3 StmtList: StmtList Stmt .
+
+    $default  reduce using rule 3 (StmtList)
+
+
+State 18
+
+    6 Expr: Expr '+' . Expr
+
+    INT    shift, and go to state 1
+    FLOAT  shift, and go to state 2
+    ID     shift, and go to state 13
+    '-'    shift, and go to state 4
+    '('    shift, and go to state 5
+
+    Expr     go to state 25
+    NUM      go to state 10
+    COMPLEX  go to state 11
+
+
+State 19
+
+    9 Expr: Expr '-' . Expr
+
+    INT    shift, and go to state 1
+    FLOAT  shift, and go to state 2
+    ID     shift, and go to state 13
+    '-'    shift, and go to state 4
+    '('    shift, and go to state 5
+
+    Expr     go to state 26
+    NUM      go to state 10
+    COMPLEX  go to state 11
+
+
+State 20
+
+    7 Expr: Expr '*' . Expr
+
+    INT    shift, and go to state 1
+    FLOAT  shift, and go to state 2
+    ID     shift, and go to state 13
+    '-'    shift, and go to state 4
+    '('    shift, and go to state 5
+
+    Expr     go to state 27
+    NUM      go to state 10
+    COMPLEX  go to state 11
+
+
+State 21
+
+    8 Expr: Expr '/' . Expr
+
+    INT    shift, and go to state 1
+    FLOAT  shift, and go to state 2
+    ID     shift, and go to state 13
+    '-'    shift, and go to state 4
+    '('    shift, and go to state 5
+
+    Expr     go to state 28
+    NUM      go to state 10
+    COMPLEX  go to state 11
+
+
+State 22
+
+    5 Stmt: Expr ';' .
+
+    $default  reduce using rule 5 (Stmt)
+
+
+State 23
+
+    4 Stmt: ID '=' Expr . ';'
+    6 Expr: Expr . '+' Expr
+    7     | Expr . '*' Expr
+    8     | Expr . '/' Expr
+    9     | Expr . '-' Expr
+
+    '+'  shift, and go to state 18
+    '-'  shift, and go to state 19
+    '*'  shift, and go to state 20
+    '/'  shift, and go to state 21
+    ';'  shift, and go to state 29
+
+
+State 24
+
+   16 COMPLEX: '(' INT ',' . INT ')'
+
+    INT  shift, and go to state 30
+
+
+State 25
+
+    6 Expr: Expr . '+' Expr
+    6     | Expr '+' Expr .
+    7     | Expr . '*' Expr
+    8     | Expr . '/' Expr
+    9     | Expr . '-' Expr
+
+    '*'  shift, and go to state 20
+    '/'  shift, and go to state 21
+
+    $default  reduce using rule 6 (Expr)
+
+
+State 26
+
+    6 Expr: Expr . '+' Expr
+    7     | Expr . '*' Expr
+    8     | Expr . '/' Expr
+    9     | Expr . '-' Expr
+    9     | Expr '-' Expr .
+
+    '*'  shift, and go to state 20
+    '/'  shift, and go to state 21
+
+    $default  reduce using rule 9 (Expr)
+
+
+State 27
+
+    6 Expr: Expr . '+' Expr
+    7     | Expr . '*' Expr
+    7     | Expr '*' Expr .
+    8     | Expr . '/' Expr
+    9     | Expr . '-' Expr
+
+    $default  reduce using rule 7 (Expr)
+
+
+State 28
+
+    6 Expr: Expr . '+' Expr
+    7     | Expr . '*' Expr
+    8     | Expr . '/' Expr
+    8     | Expr '/' Expr .
+    9     | Expr . '-' Expr
+
+    $default  reduce using rule 8 (Expr)
+
+
+State 29
+
+    4 Stmt: ID '=' Expr ';' .
+
+    $default  reduce using rule 4 (Stmt)
+
+
+State 30
+
+   16 COMPLEX: '(' INT ',' INT . ')'
+
+    ')'  shift, and go to state 31
+
+
+State 31
+
+   16 COMPLEX: '(' INT ',' INT ')' .
+
+    $default  reduce using rule 16 (COMPLEX)
